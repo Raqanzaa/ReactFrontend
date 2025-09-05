@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -32,7 +32,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:8000/auth/login/google-oauth2/';
+        window.location.href = 'http://localhost:8000/auth/login/google-oauth2/?prompt=select_account';
     };
 
     return (
