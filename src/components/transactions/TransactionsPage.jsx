@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTransactions } from '../../hooks/useTransactions';
 import TransactionForm from './TransactionForm';
 import TransactionList from './TransactionList';
@@ -9,10 +9,12 @@ const TransactionsPage = () => {
     const [showForm, setShowForm] = useState(false);
     const [filters, setFilters] = useState({});
 
+    useEffect(() => {
+        fetchTransactions(filters);
+    }, [filters, fetchTransactions]);
+
     const handleFiltersChange = (newFilters) => {
         setFilters(newFilters);
-        // In a real implementation, you would fetch transactions with these filters
-        console.log('Applying filters:', newFilters);
     };
 
     if (loading) {
@@ -52,7 +54,12 @@ const TransactionsPage = () => {
             {showForm && (
                 <div className="bg-white p-6 rounded-lg shadow-md mb-6">
                     <h2 className="text-xl font-semibold mb-4">Add New Transaction</h2>
-                    <TransactionForm onSuccess={() => setShowForm(false)} />
+                    <TransactionForm
+                        onSuccess={() => {
+                            setShowForm(false);
+                            fetchTransactions();
+                        }}
+                    />
                 </div>
             )}
 

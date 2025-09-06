@@ -3,16 +3,18 @@ import { transactionsService } from '../services/transactionsService';
 
 export const useTransactions = () => {
     const [transactions, setTransactions] = useState([]);
+    const [summary, setSummary] = useState(null);
+    const [byCategory, setByCategory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchTransactions = useCallback(async (params = {}) => {
+    const fetchTransactions = useCallback(async (filters = {}) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await transactionsService.getTransactions(params);
-            // Handle both paginated and non-paginated responses
-            setTransactions(response.data.results || response.data);
+            // The service will append filters as query params (e.g., ?type=EX)
+            const response = await transactionsService.getTransactions(filters);
+            setTransactions(response.data);
         } catch (err) {
             setError(err.response?.data || 'Failed to fetch transactions');
         } finally {
@@ -20,10 +22,28 @@ export const useTransactions = () => {
         }
     }, []);
 
+
+    const fetchSummary = useCallback(async () => {
+        try {
+            const response = await transactionsService.getSummary();
+            setSummary(response.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
+    const fetchByCategory = useCallback(async () => {
+        try {
+            const response = await transactionsService.getByCategory();
+            setByCategory(response.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
     const createTransaction = async (data) => {
         try {
             const response = await transactionsService.createTransaction(data);
-            // Optimistic update: add the new item to the top
             setTransactions(prev => [response.data, ...prev]);
             return response.data;
         } catch (err) {
@@ -53,13 +73,19 @@ export const useTransactions = () => {
 
     useEffect(() => {
         fetchTransactions();
-    }, [fetchTransactions]);
+        fetchSummary();
+        fetchByCategory();
+    }, [fetchTransactions, fetchSummary, fetchByCategory]);
 
     return {
         transactions,
+        summary,
+        byCategory,
         loading,
         error,
         fetchTransactions,
+        fetchSummary,
+        fetchByCategory,
         createTransaction,
         updateTransaction,
         deleteTransaction,

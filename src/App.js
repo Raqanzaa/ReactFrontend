@@ -16,7 +16,7 @@ import InvestmentsPage from './components/investments/InvestmentsPage';
 function AppContent() {
   return (
     <div className="min-h-screen bg-gray-100 font-poppins">
-      <Navigation />
+      {/* <Navigation /> */}
       <main>
         <Routes>
           <Route path="/login" element={<Login />} />
