@@ -1,23 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { formatCurrency } from '../../utils/formatters';
 
 const FinancialSummary = ({ transactions = [] }) => {
-    // Calculate totals
-    const income = transactions
-        .filter(t => t.amount > 0 && !t.is_transfer)
-        .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+    const { income, expenses, net } = useMemo(() => {
+        const income = transactions
+            .filter(t => t.type === "IN" && !t.is_transfer)
+            .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
-    const expenses = transactions
-        .filter(t => t.amount < 0 && !t.is_transfer)
-        .reduce((sum, t) => sum + Math.abs(parseFloat(t.amount)), 0);
+        const expenses = transactions
+            .filter(t => t.type === "EX" && !t.is_transfer)
+            .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
-    const net = income - expenses;
+        const net = income - expenses;
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(amount);
-    };
+        return { income, expenses, net };
+    }, [transactions]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -29,7 +26,9 @@ const FinancialSummary = ({ transactions = [] }) => {
                     </div>
                     <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-600">Income</h3>
-                        <p className="text-2xl font-bold text-green-600">{formatCurrency(income)}</p>
+                        <p className="text-2xl font-bold text-green-600">
+                            {formatCurrency(income)}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -42,7 +41,9 @@ const FinancialSummary = ({ transactions = [] }) => {
                     </div>
                     <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-600">Expenses</h3>
-                        <p className="text-2xl font-bold text-red-600">{formatCurrency(expenses)}</p>
+                        <p className="text-2xl font-bold text-red-600">
+                            {formatCurrency(expenses * -1)}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -55,7 +56,10 @@ const FinancialSummary = ({ transactions = [] }) => {
                     </div>
                     <div className="ml-4">
                         <h3 className="text-sm font-medium text-gray-600">Net</h3>
-                        <p className={`text-2xl font-bold ${net >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <p
+                            className={`text-2xl font-bold ${net >= 0 ? "text-green-600" : "text-red-600"
+                                }`}
+                        >
                             {formatCurrency(net)}
                         </p>
                     </div>

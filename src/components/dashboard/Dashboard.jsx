@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../hooks/useTransactions';
 import { useBudgets } from '../../hooks/useBudgets';
 import { useGoals } from '../../hooks/useGoals';
+import Navbar from '../common/Navbar';
 import FinancialSummary from './FinancialSummary';
 import RecentTransactions from './RecentTransactions';
 import BudgetProgress from './BudgetProgress';
@@ -20,29 +21,11 @@ const Dashboard = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex items-center">
-                            <h1 className="text-xl font-semibold">Dashboard</h1>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <span>Welcome, {user.first_name || user.username}!</span>
-                            <button
-                                onClick={logout}
-                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md"
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
+            <Navbar />
             <div className="min-h-screen bg-gray-100">
                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                        Welcome back, {user?.first_name || user?.username}!
+                        Welcome back, {user ? (user.first_name || user.username) + (user.last_name ? ` ${user.last_name}` : "") : "Guest"}!
                     </h1>
 
                     <FinancialSummary transactions={transactions} />

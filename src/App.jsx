@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
-import Navigation from './components/common/Navigation';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import OAuthCallback from './components/auth/OAuthCallback';
@@ -16,7 +15,6 @@ import InvestmentsPage from './components/investments/InvestmentsPage';
 function AppContent() {
   return (
     <div className="min-h-screen bg-gray-100 font-poppins">
-      {/* <Navigation /> */}
       <main>
         <Routes>
           <Route path="/login" element={<Login />} />
